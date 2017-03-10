@@ -6,66 +6,66 @@ This was a course project for CSE531 (Operating Systems) taught at IIIT - Hydera
 - Tested on Fedora 24                                                     
 - If you're on a lower version of Fedora, use 'yum' instead of 'dnf'      
 
-1. Install qemu
+### Install qemu
 ```
 sudo dnf install qemu
 ```
-	In Fedora, qemu is designed to support multiple archs. 
-	qemu- commands run cross-compiled binaries straight from the elf. 
-	qemu-system- commands start an OS. So we need a symlink (cause there
-	ain't no qemu. It's called qemu-system-... depending upon what
-	architecture you want for your emulated system)
+In Fedora, qemu is designed to support multiple archs. 
+qemu- commands run cross-compiled binaries straight from the elf. 
+qemu-system- commands start an OS. So we need a symlink (cause there
+ain't no qemu. It's called qemu-system-... depending upon what
+architecture you want for your emulated system)
 ```
 sudo ln -s /bin/qemu-system-i386 /bin/qemu
 ```
-2. Fix the error: `stropts.h: No such file or directory while making utils`
+### Fix the error: `stropts.h: No such file or directory while making utils`
 ```	
 sudo dnf provides '*/stropts.h'
 ```
-	You'll get a list of packages that provide the required header.
-	This one that worked for me was glibc-arm-linux-gnu-devel
+You'll get a list of packages that provide the required header.
+This one that worked for me was glibc-arm-linux-gnu-devel
 ```	
 sudo dnf install glibc-arm-linux-gnu-devel
 ```
-	This is not enough since the headers are installed in 
-	`/usr/arm-linux-gnu/include` while we need them in `/usr/include`.
-	So, either modify CFLAGS in the make file or as a quick fix,
-	give your system stropts.h by making symlinks.
-	We'll use the latter approach. (Remember to remove these later,
-	although I don't think they'll do any harm.)
+This is not enough since the headers are installed in 
+`/usr/arm-linux-gnu/include` while we need them in `/usr/include`.
+So, either modify CFLAGS in the make file or as a quick fix,
+give your system stropts.h by making symlinks.
+We'll use the latter approach. (Remember to remove these later,
+although I don't think they'll do any harm.)
 ```
 sudo ln -s /usr/arm-linux-gnu/include/bits/stropts.h /usr/include/bits/stropts.h
 sudo ln -s /usr/arm-linux-gnu/include/stropts.h /usr/include/stropts.h
 sudo ln -s /usr/arm-linux-gnu/include/bits/xtitypes.h /usr/include/bits/xtitypes.h
 ```
-3. Then cd into src/utils and build
+### Then cd into src/utils and build
 ```
 make
 ```
-4. [For convenience] Create a `bin` directory under your Assignment 
-	directory and add that to your `PATH` (temporarily). 
-	Copy the scripts in `src/utils` to the `bin` directory.
-	Also, copy `squish-pty` and squish-unix to the `bin` directory
+### [For convenience] Create a `bin` directory under your Assignment 
+directory and add that to your `PATH` (temporarily). 
+Copy the scripts in `src/utils` to the `bin` directory.
+Also, copy `squish-pty` and squish-unix to the `bin` directory
 
-5. In your `bin` directory, make the following edits to the script `pintos`
-	i. change line 103 to: `$sim = "qemu" if !defined $sim;`
-	We are doing this because pintos wants boch as the default emulator.
-	So, if you don't supply an emulation option when invoking pintos, it'll
-	try to use boch. By making the above change we make it look for qemu
-	as its default emulator
-
-6. [Testing] cd to `src/threads` and make
+### In your `bin` directory, make the following edits to the script `pintos`
+Change line 103 to: `$sim = "qemu" if !defined $sim;`
+We are doing this because pintos wants boch as the default emulator.
+So, if you don't supply an emulation option when invoking pintos, it'll
+try to use boch. By making the above change we make it look for qemu
+as its default emulator
+	
+### [Testing] cd to `src/threads` and make
 ```
 cd src/threads
- make
+make
 ```
-	To check if pintos works, cd to `src/threads/build` and invoke the
-	multiple alarms test
+To check if pintos works, cd to `src/threads/build` and invoke the
+multiple alarms test
 ```
 cd src/thread/build
 pintos run alarm-multiple
 ```
-	You'll get something similar to this (ignore BEGIN QEMU ... stuff):
+You'll get something similar to this:
 ```
 	PiLo hda1
 	Loading...........
@@ -120,9 +120,9 @@ pintos run alarm-multiple
 	(alarm-multiple) end
 	Execution of 'alarm-multiple' complete.
 ```
-	If you get a similar output: Hurray! It works!
-	Otherwise: Try to find what you did wrong (see REFERENCES at the end).
- 	Also: below is my assignment directory's `tree -L 3` for reference
+If you get a similar output: Hurray! It works!
+Otherwise: Try to find what you did wrong (see REFERENCES at the end).
+Also: below is my assignment directory's `tree -L 3` for reference
 ```
 	.
 	├── bin
@@ -164,10 +164,7 @@ pintos run alarm-multiple
 	14 directories, 21 files
 ```
 
-Cheers,
-Sandip
-
-[REREFERNCES:]
+## References
 1. https://pintosiiith.wordpress.com/2012/09/13/install-pintos-with-qemu/
 2. https://bugzilla.redhat.com/show_bug.cgi?id=439403
 3. http://forums.fedoraforum.org/showthread.php?t=194667
